@@ -52,7 +52,11 @@ button {
 
 .section__list {
   display: flex;
-  margin-bottom: 30px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.section__item {
+  padding: 5px 0;
 }
 
 .section__item:not(:last-child) {
@@ -94,6 +98,8 @@ button {
   width: 220px;
   height: 150px;
   margin: 15px;
+  opacity: 1;
+  transition: opacity 1s ease;
 }
 
 .section__content:hover .section__img {
@@ -107,21 +113,45 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.7s ease 0s;
+  transition: all 0.5s ease;
 }
 
 .hide {
-  opacity: 1;
-  visibility: hidden;
-  animation: hide-element 1s forwards;
+  opacity: 0;
+  animation: size-element 0.5s 1s forwards;
 }
 
-@keyframes hide-element {
+@keyframes size-element {
   100% {
-    opacity: 0;
-    visibility: visible;
     width: 0;
     height: 0;
     margin: 0;
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 600px) {
+  .section__title {
+    font-size: 30px;
+    margin-bottom: 15px;
+  }
+
+  .section__text {
+    font-size: 16px;
+    margin-bottom: 15px;
+  }
+
+  .section__list {
+    justify-content: center;
+    margin-bottom: 5px;
+  }
+
+  .section__item:not(:last-child) {
+    margin-right: 10px;
+  }
+
+  .section__button {
+    font-size: 16px;
+    padding: 7px 15px;
   }
 }
