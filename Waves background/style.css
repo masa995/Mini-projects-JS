@@ -1,0 +1,222 @@
+*,
+*::before,
+*::after {
+  padding: 0;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: Arial, sans-serif;
+  color: #383838;
+  font-size: 24px;
+  background-color: #fff;
+}
+
+.container {
+  max-width: 1350px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.section {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  padding-top: 70px;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+.section__title {
+  text-align: center;
+  color: #175b83;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 50px;
+}
+
+.section__img-box {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+
+.section__wave-1 {
+  position: relative;
+  z-index: 30;
+  width: 200%;
+  height: 120px;
+  background: url("./Wave-svg/wave.svg");
+  background-repeat: repeat-x;
+  animation: wave 7s linear infinite;
+}
+
+.section__wave-2 {
+  position: absolute;
+  z-index: 20;
+  bottom: 10px;
+  width: 200%;
+  height: 120px;
+  background: url("./Wave-svg/wave2.svg");
+  background-repeat: repeat-x;
+  opacity: 0.5;
+  animation: wave 10s linear infinite;
+}
+
+.section__wave-3 {
+  position: absolute;
+  z-index: 10;
+  bottom: 40px;
+  width: 200%;
+  height: 110px;
+  background: url("./Wave-svg/wave3.svg");
+  background-repeat: repeat-x;
+  opacity: 0.3;
+  transform: translate3d(0, 0, 0);
+  animation: wave 15s linear infinite;
+}
+
+.section__cat-img {
+  position: absolute;
+  z-index: 20;
+  left: -155px;
+  bottom: 55px;
+  width: 145px;
+  height: 175px;
+  background: url("./Animals-img/cat.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  animation: cat 8s linear 8s infinite;
+}
+
+.section__shark-img {
+  position: absolute;
+  bottom: -100%;
+  left: 60%;
+  width: 150px;
+  height: 110px;
+  background: url("./Animals-img/shark.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  animation: shark 7s linear infinite;
+}
+
+.section__shark-img2 {
+  position: absolute;
+  z-index: 20;
+  bottom: -100%;
+  left: 70%;
+  width: 150px;
+  height: 110px;
+  background: url("./Animals-img/shark.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  animation: shark2 8s linear 17s infinite;
+}
+
+.section-2 {
+  width: 100%;
+  height: 50vh;
+  padding: 30px 0;
+  background-color: #0693e3ff;
+  
+}
+
+.section-2__title {
+  margin-bottom: 40px;
+  text-align: center;
+  color: #fff;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-size: 40px;
+}
+
+.section-2__list{
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0;
+  font-weight: 600;
+  color: #fff;
+}
+
+@media(max-width: 1000px){
+  .section{
+    padding: 50px;
+  }
+  
+  .section__title {
+  font-size: 35px;
+  }
+
+  section-2__title{
+  margin-bottom: 30px;
+  font-size: 25px;
+  }
+}
+
+/* Animations */
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-25%);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes cat {
+  0% {
+    left: 0;
+    transform: translateX(100vw);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes shark {
+  0% {
+    bottom: -100%;
+    transform: rotate(45deg);
+  }
+
+  50% {
+    bottom: 55px;
+  }
+
+  100% {
+    bottom: -100%;
+    transform: translateX(-400px);
+  }
+}
+
+@keyframes shark2 {
+  0% {
+    bottom: -100%;
+    transform: rotate(-45deg) scale(-1, 1);
+  }
+
+  50% {
+    bottom: 55px;
+  }
+
+  100% {
+    bottom: -100%;
+    transform: rotate(-45deg) scale(-1, 1);
+  }
+}
