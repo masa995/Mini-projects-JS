@@ -1,6 +1,6 @@
 *,
 *::before,
-*::after {
+*::after{
   padding: 0;
   margin: 0;
   border: 0;
@@ -9,11 +9,22 @@
 }
 
 html,
-body {
+body{
   height: 100%;
   font-family: Arial, sans-serif;
   color: #393838;
   font-size: 24px;
+}
+
+.visually-hidden{
+  position: absolute !important;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  width: 1px;
+  height: 1px; 
+  padding: 0;
+  border: 0;
 }
 
 .section{
