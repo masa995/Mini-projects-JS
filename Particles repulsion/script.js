@@ -7,7 +7,9 @@
     dotMinRad: 6,
     dotMaxRad: 20,
     massFactor: 0.002,
-    defColor: 'rgba(250, 10, 30, 0.9)'
+    defColor: 'rgba(250, 10, 30, 0.9)',
+    smooth: 0.95,
+    sphereRad: 300
   }
 
   const TWO_PI = 2 * Math.PI;
@@ -34,6 +36,9 @@
     }
 
     draw() {
+      this.pos.x += this.vel.x;
+      this.pos.y += this.vel.y;
+
       this.createCircle(this.pos.x, this.pos.y, this.rad, true, this.color);
       this.createCircle(this.pos.x, this.pos.y, this.rad, false, this.color);
     }
@@ -44,6 +49,37 @@
       ctx.arc(x, y, rad, 0, TWO_PI);
       ctx.closePath();
       fill ? ctx.fill() : ctx.stroke();
+    }
+
+    updateDots() {
+      //вычесляем притяжения
+      for (let i = 0; i < dots.length; i++) {
+        let acc = { //ускорение
+          x: 0,
+          y: 0
+        }
+
+        for (let j = 0; j < dots.length; j++) {
+          if (i === j) continue; // ускорение частицы самой к себе не нужно
+          let [a, b] = [dots[i], dots[j]]
+          //a частица ускорение, которой мы высчитываем
+          //b соседняя частица
+
+          let delta = {
+            x: b.pos.x - a.pos.x,
+            y: b.pos.y - a.pos.y
+          }
+          let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y) || 1; //растояние от a до b
+          let forse = (dist - config.sphereRad) / dist * b.mass;
+
+          acc.x += delta.x * forse;
+          acc.y += delta.y * forse;
+        }
+
+        dots[i].vel.x = dots[i].vel.x * config.smooth + acc.x * dots[i].mass;
+        dots[i].vel.y = dots[i].vel.y * config.smooth + acc.y * dots[i].mass;
+
+      }
     }
   }
 
@@ -70,7 +106,7 @@
     if (mouse.down) {
       dots.push(new Dot());
     }
-
+    dots.forEach(e => e.updateDots());
     dots.map(e => e.draw());
 
     window.requestAnimationFrame(loop);
