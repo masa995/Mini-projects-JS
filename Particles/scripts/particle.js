@@ -109,10 +109,30 @@ class AnimationParticles {
   }
 
   loop() {
+    let fps = 300;
+    let startTime = 0;
+    let currentTime = 0;
+    let time = 0;
+    let currentSecond = 0
+
+    this.ctx.clearRect(0, 0, this.w, this.h);
+
+    if (this.startTime === 0) {
+      startTime = new Date().getTime();
+    }
+
+    currentTime = new Date().getTime();
+    time = currentTime - startTime;
+    currentSecond = Math.floor(time / fps);
+
+    if (currentSecond > 0) {
+      startTime = 0;
+
+      this.reDrawBackground();
+      this.reDrawParticles();
+      this.drawLines();
+    }
     requestAnimationFrame(this.loop);
-    this.reDrawBackground();
-    this.reDrawParticles();
-    this.drawLines();
   }
 
   init() {
