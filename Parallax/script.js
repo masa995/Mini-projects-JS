@@ -1,42 +1,52 @@
 (() => {
 
-  const cnv = document.querySelector(`canvas`);
-  const ctx = cnv.getContext(`2d`);
+  const canvas = document.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
 
-  const cfg = {
+  let cw;
+  let ch;
+  let cx; //центр x
+  let cy; //центр y
+  let ph; //часть высоты
+  let pw; //часть ширины
+  let mx = 0; //координаты мыши x
+  let my = 0; // координаты мыши y
+
+  const config = {
     orbsCount: 400,
-    minVelocity: .2,
-    ringsCount: 10,
+    minVelocity: 0.5,
+    ringsCount: 7
   }
 
-  let mx = 0, my = 0;
-  cnv.addEventListener(`mousemove`, e => {
-    mx = e.clientX - cnv.getBoundingClientRect().left;
-    my = e.clientY - cnv.getBoundingClientRect().top;
-  })
+  canvas.addEventListener('mousemove', (e) => {
+    mx = e.clientX - canvas.getBoundingClientRect().left;
+    my = e.clientY - canvas.getBoundingClientRect().top;
+  });
 
-  let cw, ch, cx, cy, ph, pw;
-  function resizeCanvas() {
-    cw = cnv.width = innerWidth;
-    ch = cnv.height = innerHeight;
-    cx = cw * .5;
-    cy = ch * .5;
-    ph = cy * .4;
-    pw = cx * .4;
+  function resize() {
+    cw = canvas.width = innerWidth;
+    ch = canvas.height = innerHeight;
+    cx = cw * 0.5;
+    cy = ch * 0.5;
+    ph = cy * 0.4;
+    pw = cx * 0.4;
   }
+
+  resize();
+
+  window.addEventListener('resize', resize);
 
   class Orb {
     constructor() {
-      this.size = Math.random() * 5 + 2;
-      this.angle = Math.random() * 360;
-      this.radius = (Math.random() * cfg.ringsCount | 0) * ph / cfg.ringsCount;
-      this.impact = this.radius / ph;
-      this.velocity = cfg.minVelocity + Math.random() * cfg.minVelocity + this.impact;
+      this.size = Math.random() * 7 + 1;
+      this.angle = Math.random() * 360; //градусы
+      this.radius = (Math.floor(Math.random() * config.ringsCount)) * ph / config.ringsCount;
+      this.impact = this.radius / ph; //св-во которое будет изменять размер взависимости от приближение объекта (изменяется от 0 до 1 взависимости от того как близко частица к центру)
+      this.velocity = config.minVelocity + Math.random() * config.minVelocity + this.impact;
     }
 
     refresh() {
-      let radian = this.angle * Math.PI / 180;
-
+      let radian = this.angle * Math.PI / 180; //преобразование в радианы
       let cos = Math.cos(radian);
       let sin = Math.sin(radian);
 
@@ -46,74 +56,54 @@
       let paralaxX = mx / cw * 2 - 1;
       let paralaxY = my / ch;
 
-      let x = cx + cos * (ph + this.radius) + offsetX;
-      let y = cy + sin * (ph + this.radius) - offsetY * paralaxY - paralaxX * offsetX;
+      let x = cx + cos * (ph + this.radius) + offsetX; //+ offsetX растянуть
+      let y = cy + sin * (ph + this.radius) - offsetY * paralaxY - offsetX * paralaxX; //- offsetY сплюснуть
 
-      let distToC = Math.hypot(x - cx, y - cy);
-      let distToM = Math.hypot(x - mx, y - my);
+      let distToC = Math.hypot(x - cx, y - cy); //дистанция до центра canvas
+      let distToM = Math.hypot(x - mx, y - my); //дистанция до курсора
 
-      let optic = sin * this.size * this.impact * .7;
-      let mEffect = distToM <= 50 ? (1 - distToM / 50) * 25 : 0;
+      let optic = sin * this.size * this.impact * 0.7;
+      let mEffect = distToM <= 50 ? (1 - distToM / 50) * 25 : 0; //изменение пазмера частицы взависимости от близости курсора
+
       let size = this.size + optic + mEffect;
 
-      let h = this.angle;
-      let s = 100;
-      let l = (1 - Math.sin(this.impact * Math.PI)) * 90 + 10;
-      let color = `hsl(${h}, ${s}%, ${l}%)`;
+
+      let h = this.angle; //тон - пинимает значение (0 - 360 )
+      let s = 100;        //насыщеность
+      let l = (1 - Math.sin(this.impact * Math.PI)) * 90 + 30;        //яркость
+      let color = `hsl(${h}, ${s}%, ${l}%)`
+
+
 
       if (distToC > ph - 1 || sin > 0) {
-        ctx.strokeStyle = ctx.fillStyle = color;
+        ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(x, y, size, 0, 2 * Math.PI);
-        distToM <= 50 ? ctx.stroke() : ctx.fill();
+        ctx.fill();
       }
 
-      this.angle = (this.angle - this.velocity) % 360;
+
+      this.angle = (this.angle + this.velocity) % 360;
     }
   }
 
-  let orbsList;
+  let orbsList = [];
   function createStardust() {
-    orbsList = [];
-    for (let i = 0; i < cfg.orbsCount; i++) {
+    for (let i = 0; i < config.orbsCount; i++) {
       orbsList.push(new Orb());
     }
   }
 
-  let bg1, bg2;
-  function createBacground() {
-    bg1 = ctx.createRadialGradient(cx, cy, 0, cx, cy, cx);
-    bg1.addColorStop(0, `rgb(10, 10, 10)`);
-    bg1.addColorStop(.5, `rgb(10, 10, 20)`);
-    bg1.addColorStop(1, `rgb(30, 10, 40)`);
-
-    bg2 = ctx.createRadialGradient(cx, cy, 0, cx, cy, cx);
-    bg2.addColorStop(0, `rgb(255, 255, 255)`);
-    bg2.addColorStop(.15, `rgb(255, 255, 255)`);
-    bg2.addColorStop(.16, `rgb(255, 200, 0)`);
-    bg2.addColorStop(.23, `rgb(255, 0, 0)`);
-    bg2.addColorStop(.45, `rgb(255, 0, 25)`);
-    bg2.addColorStop(.85, `rgb(9, 9, 25)`);
-    bg2.addColorStop(1, `rgb(0, 0, 20)`);
-  }
-
-  function init() {
-    resizeCanvas();
-    createBacground();
-    createStardust();
-  }
-  init();
-  window.addEventListener(`resize`, init);
+  createStardust();
 
   function loop() {
     requestAnimationFrame(loop);
-    ctx.globalCompositeOperation = `normal`;
-    ctx.fillStyle = bg2;
-    ctx.fillRect(0, 0, cw, ch);
+    ctx.globalCompositeOperation = 'normal'; //режим наложения
+    ctx.clearRect(0, 0, cw, ch);
 
-    ctx.globalCompositeOperation = `lighter`;
-    orbsList.map(e => e.refresh());
+    ctx.globalCompositeOperation = 'lighter'; //режим наложение, который при наложение цветов делает цвета светлее
+    orbsList.map(el => el.refresh())
   }
-  loop();
+  loop()
 
 })();
