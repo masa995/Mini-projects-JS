@@ -12,11 +12,11 @@ window.onload = function () {
 
     //Коэффеценты
     const forClouds = 40;
-    const forMountains = 20;
+    const forMountains = 30;
     const forHuman = 20;
 
     //Скорость анимации
-    const speed = 0.05;
+    const speed = 0.15;
 
     //Доп переменные
     let positionX = 0;
@@ -55,5 +55,30 @@ window.onload = function () {
       coordXprocent = coordX / parallaxWidth * 100;
       coordYprocent = coordY / parallaxHeight * 100;
     });
+
+    //Parallax при скролле
+
+    let thresholdSets = [];
+    for (let i = 0; i <= 1.0; i += 0.005) {
+      thresholdSets.push(i);
+    }
+
+    const callback = function (entries, observer) {
+      const scrollTopProcent = window.pageYOffset / parallax.offsetHeight * 100;
+      setParallaxItemsStyle(scrollTopProcent);
+    }
+
+    // Intersection Observer API позволяет указать функцию, которая будет вызвана всякий раз для элемента (target) при пересечении его с областью видимости документа (по умолчанию) или заданным элементом (root).
+    const observer = new IntersectionObserver(callback, {
+      threshold: thresholdSets
+    });
+
+    observer.observe(document.querySelector('.content'));
+
+    function setParallaxItemsStyle(scrollTopProcent) {
+      content.style.cssText = `transform: translate(0%, -${scrollTopProcent / 9}%)`;
+      mountains.parentElement.style.cssText = `transform: translate(0%, -${scrollTopProcent / 6}%)`;
+      human.parentElement.style.cssText = `transform: translate(0%, -${scrollTopProcent / 3}%)`;
+    }
   }
 }
